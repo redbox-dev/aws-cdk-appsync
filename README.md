@@ -31,3 +31,9 @@ npm run build
 ```sh
 cdk deploy
 ```
+
+------ Note ----
+
+cdk bootstrap
+
+complie and add the lambdas.

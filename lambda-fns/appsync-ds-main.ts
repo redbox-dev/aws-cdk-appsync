@@ -16,6 +16,7 @@ type AppSyncEvent = {
 }
 
 exports.handler = async (event:AppSyncEvent) => {
+    console.log("Called lambda", event);
     switch (event.info.fieldName) {
         case "getNoteById":
             return await getNoteById(event.arguments.noteId);

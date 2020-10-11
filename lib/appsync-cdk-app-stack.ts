@@ -2,6 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as appsync from '@aws-cdk/aws-appsync';
 import * as ddb from '@aws-cdk/aws-dynamodb';
 import * as lambda from '@aws-cdk/aws-lambda';
+import { join } from 'path';
 
 export class AppsyncCdkAppStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -17,8 +18,13 @@ export class AppsyncCdkAppStack extends cdk.Stack {
             expires: cdk.Expiration.after(cdk.Duration.days(365))
           }
         },
+        additionalAuthorizationModes : [
+          {
+            authorizationType: appsync.AuthorizationType.IAM
+          }
+        ]
       },
-      xrayEnabled: true,
+      xrayEnabled: false,
     });
 
     // print out the AppSync GraphQL endpoint to the terminal
@@ -36,10 +42,11 @@ export class AppsyncCdkAppStack extends cdk.Stack {
       value: this.region
     });
 
+    // TODO : find a way to add typescript in this. Currently we need to compile tsc and then deploy
     const notesLambda = new lambda.Function(this, 'AppSyncNotesHandler', {
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'appsync-ds-main.handler',
-      code: lambda.Code.fromAsset('lambda-fns'),
+      code: lambda.Code.fromAsset(join(__dirname, '../lambda-fns')),
       memorySize: 1024
     });
     
